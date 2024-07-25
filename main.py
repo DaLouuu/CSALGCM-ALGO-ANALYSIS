@@ -16,10 +16,17 @@ metro_manila_graph = {
     "Paranaque": {"Pasay": 4}
 }
 
-# Define heuristic values for each city
+# Updated heuristic values assuming "Paranaque" as the goal
 heuristic_values = {
-    "Makati": 10, "Taguig": 8, "Pasay": 6, "Mandaluyong": 7, "Pasig": 3,
-    "San Juan": 4, "Quezon City": 2, "Marikina": 1, "Paranaque": 9
+    "Makati": 6,
+    "Taguig": 9,
+    "Pasay": 4,
+    "Mandaluyong": 10,
+    "Pasig": 15,
+    "San Juan": 12,
+    "Quezon City": 17,
+    "Marikina": 20,
+    "Paranaque": 0
 }
 
 # Function to display the cities and their heuristic values
@@ -43,15 +50,16 @@ def get_user_input():
 
 # Function to run the search and display results
 def run_search(search_algorithm, start_city, end_city):
-    start_time = time.time()
     tracemalloc.start()
+    start_time = time.perf_counter()
     
     visited_order, total_cost, path, nodes_expanded, max_frontier_size, visit_count = search_algorithm.search(start_city, end_city)
     
-    end_time = time.time()
+    end_time = time.perf_counter()
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     
+    elapsed_time = (end_time - start_time) * 1e6  # Convert to microseconds
     path_str = " -> ".join(path)
     visited_str = " -> ".join(visited_order)
     
@@ -59,7 +67,7 @@ def run_search(search_algorithm, start_city, end_city):
         f"Final Path: {path_str}\n"
         f"Path Traversed: {visited_str}\n"
         f"Total Cost: {total_cost}\n"
-        f"Time: {end_time - start_time:.4f} seconds\n"
+        f"Time: {elapsed_time:.4f} microseconds\n"
         f"Nodes Expanded: {nodes_expanded}\n"
         f"Max Frontier Size: {max_frontier_size}\n"
         f"Memory Usage: Current={current / 1024:.2f}KB, Peak={peak / 1024:.2f}KB\n"
@@ -78,10 +86,11 @@ def main():
         print("Invalid city names. Please enter valid city names from the graph.")
         return
     
+    
+
     print("\nUniform Cost Search:")
     ucs = UniformCostSearch(metro_manila_graph)
     run_search(ucs, start_city, end_city)
-    
     print("\nA* Search:")
     a_star = AStarSearch(metro_manila_graph, heuristic_values)
     run_search(a_star, start_city, end_city)
