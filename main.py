@@ -2,7 +2,15 @@ import time
 import tracemalloc
 from UCS import UniformCostSearch
 from AStar import AStarSearch
+<<<<<<< Updated upstream
 from BeamSearch import BeamSearch
+=======
+<<<<<<< HEAD
+from BeamSearch import BeamSearch
+=======
+from beamSearch import BeamSearch
+>>>>>>> ed2990d89ca13c340da788bdc4a09ea32c8e2d65
+>>>>>>> Stashed changes
 
 # Define a new graph with Metro Manila cities and connections
 metro_manila_graph = {
@@ -97,6 +105,10 @@ def main():
     a_star = AStarSearch(metro_manila_graph, heuristic_values)
     run_search(a_star, start_city, end_city)
     print("\nBeam Search:")
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
     # Define distances for Beam Search (example distances matrix, you need to adapt it to your use case)
     distances = [
         [0, 3, 1],
@@ -105,6 +117,12 @@ def main():
     ]
     beta = 2
     beam_search = BeamSearch(distances, beta)
+<<<<<<< Updated upstream
+=======
+=======
+    beam_search = BeamSearch(metro_manila_graph, heuristic_values, beam_width=2)
+>>>>>>> ed2990d89ca13c340da788bdc4a09ea32c8e2d65
+>>>>>>> Stashed changes
     run_search(beam_search, start_city, end_city)
 
 if __name__ == "__main__":
