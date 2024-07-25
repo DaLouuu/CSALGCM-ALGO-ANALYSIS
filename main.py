@@ -2,6 +2,7 @@ import time
 import tracemalloc
 from UCS import UniformCostSearch
 from AStar import AStarSearch
+from beamSearch import BeamSearch
 
 # Define a new graph with Metro Manila cities and connections
 metro_manila_graph = {
@@ -94,6 +95,9 @@ def main():
     print("\nA* Search:")
     a_star = AStarSearch(metro_manila_graph, heuristic_values)
     run_search(a_star, start_city, end_city)
+    print("\nBeam Search:")
+    beam_search = BeamSearch(metro_manila_graph, heuristic_values, beam_width=2)
+    run_search(beam_search, start_city, end_city)
 
 if __name__ == "__main__":
     main()
