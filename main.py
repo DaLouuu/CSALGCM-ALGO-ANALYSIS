@@ -2,6 +2,7 @@ import time
 import tracemalloc
 from UCS import UniformCostSearch
 from AStar import AStarSearch
+from BeamSearch import BeamSearch
 
 # Define a new graph with Metro Manila cities and connections
 metro_manila_graph = {
@@ -48,20 +49,23 @@ def get_user_input():
     end_city = input("Enter the end city: ").strip()
     return start_city, end_city
 
-# Function to run the search and display results
-def run_search(search_algorithm, start_city, end_city):
+def run_search(search_algorithm, start_city=None, end_city=None):
     tracemalloc.start()
     start_time = time.perf_counter()
-    
-    visited_order, total_cost, path, nodes_expanded, max_frontier_size, visit_count = search_algorithm.search(start_city, end_city)
-    
+
+    # Handle different search algorithm signatures
+    if isinstance(search_algorithm, BeamSearch):
+        visited_order, total_cost, path, nodes_expanded, max_frontier_size, visit_count = search_algorithm.search()
+    else:
+        visited_order, total_cost, path, nodes_expanded, max_frontier_size, visit_count = search_algorithm.search(start_city, end_city)
+
     end_time = time.perf_counter()
     current, peak = tracemalloc.get_traced_memory()
     tracemalloc.stop()
     
     elapsed_time = (end_time - start_time) * 1e6  # Convert to microseconds
-    path_str = " -> ".join(path)
-    visited_str = " -> ".join(visited_order)
+    path_str = " -> ".join(map(str, path))
+    visited_str = " -> ".join(map(str, [node for path_info in visited_order for node in path_info[0]]))
     
     result_text = (
         f"Final Path: {path_str}\n"
@@ -86,14 +90,22 @@ def main():
         print("Invalid city names. Please enter valid city names from the graph.")
         return
     
-    
-
     print("\nUniform Cost Search:")
     ucs = UniformCostSearch(metro_manila_graph)
     run_search(ucs, start_city, end_city)
     print("\nA* Search:")
     a_star = AStarSearch(metro_manila_graph, heuristic_values)
     run_search(a_star, start_city, end_city)
+    print("\nBeam Search:")
+    # Define distances for Beam Search (example distances matrix, you need to adapt it to your use case)
+    distances = [
+        [0, 3, 1],
+        [2, 0, 4],
+        [1, 5, 0]
+    ]
+    beta = 2
+    beam_search = BeamSearch(distances, beta)
+    run_search(beam_search, start_city, end_city)
 
 if __name__ == "__main__":
     main()
